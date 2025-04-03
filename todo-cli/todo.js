@@ -21,7 +21,7 @@ const todoList = () => {
   
     const toDisplayableList = (list) => {
       return list.map(todo=>{
-        const checkbox = todo.completed?"[X]" : "[]";
+        const checkbox = todo.completed?"[X]" : "[ ]";
         const dateDisplay =todo.dueDate=== today?"":`${todo.dueDate}`;
         return `${checkbox} ${todo.title} ${dateDisplay}`;
       }).join("\n");

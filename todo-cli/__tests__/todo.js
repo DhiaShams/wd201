@@ -2,9 +2,7 @@ const todoList = require("../todo");
 
 const { all, markAsComplete, add, overdue, dueToday, dueLater } = todoList();
 
-const formattedDate = (d) => {
-  return d.toISOString().split("T")[0];
-};
+const formattedDate = (d) => d.toISOString().split("T")[0];
 
 var dateToday = new Date();
 const today = formattedDate(dateToday);
@@ -16,7 +14,9 @@ const tomorrow = formattedDate(
 );
 
 describe("Todolist Test Suite", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    // Reset all before each test
+    all.length = 0;
     add({ title: "Test todo 1", completed: false, dueDate: yesterday });
     add({ title: "Test todo 2", completed: false, dueDate: today });
     add({ title: "Test todo 3", completed: false, dueDate: tomorrow });
@@ -26,6 +26,9 @@ describe("Todolist Test Suite", () => {
     const todoItemsCount = all.length;
     add({ title: "Test todo 4", completed: false, dueDate: today });
     expect(all.length).toBe(todoItemsCount + 1);
+    expect(all[todoItemsCount].title).toBe("Test todo 4");
+    expect(all[todoItemsCount].completed).toBe(false);
+    expect(all[todoItemsCount].dueDate).toBe(today);
   });
 
   test("Should mark a todo as complete", () => {
@@ -36,7 +39,7 @@ describe("Todolist Test Suite", () => {
 
   test("Should retrieve overdue items", () => {
     const overdueItems = overdue();
-    expect(overdueItems.every((todo) => new Date(todo.dueDate) < new Date(today))).toBe(true);
+    expect(overdueItems.every((todo) => formattedDate(new Date(todo.dueDate)) < today)).toBe(true);
   });
 
   test("Should retrieve due today items", () => {
@@ -46,6 +49,6 @@ describe("Todolist Test Suite", () => {
 
   test("Should retrieve due later items", () => {
     const dueLaterItems = dueLater();
-    expect(dueLaterItems.every((todo) => new Date(todo.dueDate) > new Date(today))).toBe(true);
+    expect(dueLaterItems.every((todo) => formattedDate(new Date(todo.dueDate)) > today)).toBe(true);
   });
 });

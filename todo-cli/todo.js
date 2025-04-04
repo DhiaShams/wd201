@@ -1,5 +1,5 @@
 const todoList = () => {
-  let all = []; // Explicitly defining 'all' as a local variable
+  let all = []; // Properly declare 'all' as a local variable
 
   const add = (todoItem) => {
     all.push(todoItem);
@@ -16,7 +16,7 @@ const todoList = () => {
   const today = formattedDate(new Date());
 
   const overdue = () => {
-    return all.filter((todo) => new Date(todo.dueDate) < new Date(today));
+    return all.filter((todo) => formattedDate(new Date(todo.dueDate)) < today);
   };
 
   const dueToday = () => {
@@ -24,14 +24,17 @@ const todoList = () => {
   };
 
   const dueLater = () => {
-    return all.filter((todo) => new Date(todo.dueDate) > new Date(today));
+    return all.filter((todo) => formattedDate(new Date(todo.dueDate)) > today);
   };
 
   const toDisplayableList = (list) => {
     return list
       .map((todo) => {
         const checkbox = todo.completed ? "[x]" : "[ ]";
-        const dateDisplay = formattedDate(new Date(todo.dueDate)) === today ? "" : ` ${todo.dueDate}`;
+        const dateDisplay =
+          formattedDate(new Date(todo.dueDate)) === today
+            ? ""
+            : ` ${formattedDate(new Date(todo.dueDate))}`;
         return `${checkbox} ${todo.title}${dateDisplay}`;
       })
       .join("\n");

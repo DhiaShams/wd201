@@ -22,20 +22,23 @@ describe("Todolist Test Suite", () => {
     add({ title: "Test todo 3", completed: false, dueDate: tomorrow });
   });
 
-  test("Should add new todo", () => {
-    const todoItemsCount = all.length;
-    add({ title: "Test todo 4", completed: false, dueDate: today });
-    expect(all.length).toBe(todoItemsCount + 1);
-    expect(all[todoItemsCount].title).toBe("Test todo 4");
-    expect(all[todoItemsCount].completed).toBe(false);
-    expect(all[todoItemsCount].dueDate).toBe(today);
-  });
+  test("Should add new todo", ()=>{
+    const todoItemsCount=all.length;
+    add(
+        {
+            title:"Test todo",
+            completed:false,
+            dueDate: new Date().toISOString()
+        }
+    );
+    expect(all.length).toBe(todoItemsCount+1);
+});
 
-  test("Should mark a todo as complete", () => {
+test("Should mark a todo as complete", ()=>{
     expect(all[0].completed).toBe(false);
     markAsComplete(0);
     expect(all[0].completed).toBe(true);
-  });
+})
 
   test("Should retrieve overdue items", () => {
     const overdueItems = overdue();

@@ -16,22 +16,22 @@ const todoList = () => {
   const today = formattedDate(new Date());
 
   const overdue = () => {
-    return all.filter((todo) => todo.dueDate < today);
+    return all.filter((todo) => new Date(todo.dueDate) < new Date(today));
   };
 
   const dueToday = () => {
-    return all.filter((todo) => todo.dueDate === today);
+    return all.filter((todo) => formattedDate(new Date(todo.dueDate)) === today);
   };
 
   const dueLater = () => {
-    return all.filter((todo) => todo.dueDate > today);
+    return all.filter((todo) => new Date(todo.dueDate) > new Date(today));
   };
 
   const toDisplayableList = (list) => {
     return list
       .map((todo) => {
         const checkbox = todo.completed ? "[x]" : "[ ]";
-        const dateDisplay = todo.dueDate === today ? "" : ` ${todo.dueDate}`;
+        const dateDisplay = formattedDate(new Date(todo.dueDate)) === today ? "" : ` ${todo.dueDate}`;
         return `${checkbox} ${todo.title}${dateDisplay}`;
       })
       .join("\n");

@@ -36,16 +36,16 @@ describe("Todolist Test Suite", () => {
 
   test("Should retrieve overdue items", () => {
     const overdueItems = overdue();
-    expect(overdueItems.every((todo) => todo.dueDate < today)).toBe(true);
+    expect(overdueItems.every((todo) => new Date(todo.dueDate) < new Date(today))).toBe(true);
   });
 
   test("Should retrieve due today items", () => {
     const dueTodayItems = dueToday();
-    expect(dueTodayItems.every((todo) => todo.dueDate === today)).toBe(true);
+    expect(dueTodayItems.every((todo) => formattedDate(new Date(todo.dueDate)) === today)).toBe(true);
   });
 
   test("Should retrieve due later items", () => {
     const dueLaterItems = dueLater();
-    expect(dueLaterItems.every((todo) => todo.dueDate > today)).toBe(true);
+    expect(dueLaterItems.every((todo) => new Date(todo.dueDate) > new Date(today))).toBe(true);
   });
 });

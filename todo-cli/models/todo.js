@@ -72,15 +72,12 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     displayableString() {
-      const checkbox = this.completed ? "[x]" : "[ ]";
-      const today = new Date().toISOString().split("T")[0];
-      const displayDate = this.dueDate === today ? "" : ` ${this.dueDate}`;
-      return `${this.id}. ${checkbox} ${this.title.trim()}${displayDate}`;
-    }
-
-    // eslint-disable-next-line no-unused-vars
-    static associate(_models) {
-      // define association here
+      let checkbox = this.completed ? "[x]" : "[ ]";
+      return `${this.id}. ${checkbox} ${this.title} ${
+        this.dueDate.toString() === new Date().toISOString().slice(0, 10)
+          ? ""
+          : this.dueDate
+      }`.trim();
     }
   }
 

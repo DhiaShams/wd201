@@ -2,10 +2,11 @@
   "name": "todo-app",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "start": "nodemon -e js,ejs",
-    "pretest": "cross-env NODE_ENV=test npx sequelize-cli db:drop && cross-env NODE_ENV=test npx sequelize-cli db:create",
-    "test": "jest"
+ "scripts": {
+    "start": "nodemon -e js,ejs index.js",
+    "test": "jest",
+    "prepare": "cd .. && husky install todo-app/.husky",
+    "prod": "NODE_ENV=production node index.js"
   },
   "author": "",
   "license": "ISC",

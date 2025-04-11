@@ -1,9 +1,14 @@
 <table>
-    <% for (let i=0;i<todos.length;i++) { %>
+  <thead>
     <tr>
-      <td>
-        <%= todos[i].title %>
-      </td>
+      <th>Title</th>
     </tr>
-    <% } %>
-  </table>
+  </thead>
+  <tbody>
+    <% todos.forEach(todo => { %>
+      <tr>
+        <td><%= todo.title %></td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>

@@ -1,6 +1,7 @@
 <!-- Overdue Tasks -->
 <% if (overdue.length > 0) { %>
-  <h2 class="text-lg font-semibold text-red-600 mt-6">Overdue</h2>
+  <h5 class="text-lg font-semibold text-red-600 mt-6">Overdue</h5>
+  <div id="overdue-count" class="text-sm text-gray-500">Count: <%= overdue.length %></div>
   <ul class="divide-y divide-gray-200">
     <% overdue.forEach(todo => { %>
       <li class="flex items-center justify-between py-2">
@@ -21,7 +22,8 @@
 
 <!-- Due Today Tasks -->
 <% if (dueToday.length > 0) { %>
-  <h2 class="text-lg font-semibold text-yellow-600 mt-6">Due Today</h2>
+  <h5 class="text-lg font-semibold text-yellow-600 mt-6">Due Today</h5>
+  <div id="due-today-count" class="text-sm text-gray-500">Count: <%= dueToday.length %></div>
   <ul class="divide-y divide-gray-200">
     <% dueToday.forEach(todo => { %>
       <li class="flex items-center justify-between py-2">
@@ -42,7 +44,8 @@
 
 <!-- Due Later Tasks -->
 <% if (dueLater.length > 0) { %>
-  <h2 class="text-lg font-semibold text-green-600 mt-6">Due Later</h2>
+  <h5 class="text-lg font-semibold text-green-600 mt-6">Due Later</h5>
+  <div id="due-later-count" class="text-sm text-gray-500">Count: <%= dueLater.length %></div>
   <ul class="divide-y divide-gray-200">
     <% dueLater.forEach(todo => { %>
       <li class="flex items-center justify-between py-2">

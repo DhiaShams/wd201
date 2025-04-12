@@ -10,6 +10,7 @@ app.use(bodyParser.json());  // to support JSON-encoded bodies
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
+// Helper function to split todos
 function categorizeTodos(todos) {
   const today = new Date().toISOString().split("T")[0];
   const overdue = [];
@@ -29,22 +30,38 @@ function categorizeTodos(todos) {
   return { overdue, dueToday, dueLater };
 }
 
+// Home Route
 app.get("/", async (request, response) => {
   const todos = await Todo.getTodos();
   const { overdue, dueToday, dueLater } = categorizeTodos(todos);
 
   if (request.accepts("html")) {
-    response.render("index", { overdue, dueToday, dueLater });
+    response.render("index", { 
+      overdueTodos: overdue, 
+      dueTodayTodos: dueToday, 
+      dueLaterTodos: dueLater,
+      overdueCount: overdue.length,
+      dueTodayCount: dueToday.length,
+      dueLaterCount: dueLater.length
+    });
   } else {
     response.json(todos);
   }
 });
 
+
+// Get all todos as JSON
 app.get("/todos", async function (_, response) {
-  const todos = await Todo.findAll();
-  response.send(todos);
+  try {
+    const todos = await Todo.findAll();
+    response.send(todos);
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    response.status(500).json(error);
+  }
 });
 
+// Get specific todo by id
 app.get("/todos/:id", async function (request, response) {
   try {
     const todo = await Todo.findByPk(request.params.id);
@@ -58,6 +75,7 @@ app.get("/todos/:id", async function (request, response) {
   }
 });
 
+// Add a new todo
 app.post("/todos", async function (request, response) {
   try {
     const todo = await Todo.addTodo(request.body);
@@ -68,9 +86,13 @@ app.post("/todos", async function (request, response) {
   }
 });
 
+// Mark todo as completed
 app.put("/todos/:id/markAsCompleted", async function (request, response) {
-  const todo = await Todo.findByPk(request.params.id);
   try {
+    const todo = await Todo.findByPk(request.params.id);
+    if (!todo) {
+      return response.status(404).send("Todo not found");
+    }
     const updatedTodo = await todo.markAsCompleted();
     return response.json(updatedTodo);
   } catch (error) {
@@ -79,11 +101,17 @@ app.put("/todos/:id/markAsCompleted", async function (request, response) {
   }
 });
 
+// Delete todo
 app.delete("/todos/:id", async function (request, response) {
-  const deletedResultsCount = await Todo.destroy({
-    where: { id: request.params.id },
-  });
-  response.send(deletedResultsCount === 1);
+  try {
+    const deletedResultsCount = await Todo.destroy({
+      where: { id: request.params.id },
+    });
+    response.send(deletedResultsCount === 1);
+  } catch (error) {
+    console.log(error);
+    response.status(500).json(error);
+  }
 });
 
 module.exports = app;

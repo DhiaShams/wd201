@@ -1,70 +1,47 @@
-<!-- Overdue Tasks -->
-<% if (overdue.length > 0) { %>
-  <h5 class="text-lg font-semibold text-red-600 mt-6">Overdue</h5>
-  <div id="overdue-count" class="text-sm text-gray-500">Count: <%= overdue.length %></div>
-  <ul class="divide-y divide-gray-200">
-    <% overdue.forEach(todo => { %>
-      <li class="flex items-center justify-between py-2">
-        <div>
-          <input type="checkbox" <% if (todo.completed) { %>checked<% } %> onclick="completeTodo(<%= todo.id %>)" class="mr-2">
-          <span class="<%= todo.completed ? 'line-through text-gray-400' : '' %>"><%= todo.title %></span>
-          <small class="text-red-500">(Due: <%= todo.dueDate %>)</small>
-        </div>
-        <button onclick="deleteTodo(<%= todo.id %>)" class="hover:text-red-600">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-current" viewBox="0 0 20 20">
-            <path d="M6 2a1 1 0 011-1h6a1 1 0 011 1v1h3a1 1 0 110 2h-1v11a2 2 0 01-2 2H5a2 2 0 01-2-2V5H2a1 1 0 110-2h3V2zm2 3v10a1 1 0 102 0V5a1 1 0 10-2 0zm4 0v10a1 1 0 102 0V5a1 1 0 10-2 0z" />
-          </svg>
-        </button>
-      </li>
-    <% }) %>
-  </ul>
-<% } %>
+<!-- Overdue Section -->
+<div class="flex mb-4">
+  <h5 class="text-xl">Overdue</h5>
+  <div class="bg-gray-200 px-2.5 py-0.5 rounded text-base ml-2" id="count-overdue"><%= overdueCount %></div>
+</div>
+<ul class="list-none">
+  <% overdueTodos.forEach(function(todo) { %>
+    <li>
+      <div class="flex items-center w-fit my-2 px-2 py-1 hover:bg-purple-50 rounded group">
+        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 border-gray-300 bg-gray-100" <%= todo.completed ? 'checked' : '' %> >
+        <label for="todo-<%= todo.id %>" class="ml-2"><%= todo.title %> - <%= todo.dueDate %></label>
+      </div>
+    </li>
+  <% }); %>
+</ul>
 
-<!-- Due Today Tasks -->
-<% if (dueToday.length > 0) { %>
-  <h5 class="text-lg font-semibold text-yellow-600 mt-6">Due Today</h5>
-  <div id="due-today-count" class="text-sm text-gray-500">Count: <%= dueToday.length %></div>
-  <ul class="divide-y divide-gray-200">
-    <% dueToday.forEach(todo => { %>
-      <li class="flex items-center justify-between py-2">
-        <div>
-          <input type="checkbox" <% if (todo.completed) { %>checked<% } %> onclick="completeTodo(<%= todo.id %>)" class="mr-2">
-          <span class="<%= todo.completed ? 'line-through text-gray-400' : '' %>"><%= todo.title %></span>
-          <small class="text-yellow-500">(Due: <%= todo.dueDate %>)</small>
-        </div>
-        <button onclick="deleteTodo(<%= todo.id %>)" class="hover:text-red-600">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-current" viewBox="0 0 20 20">
-            <path d="M6 2a1 1 0 011-1h6a1 1 0 011 1v1h3a1 1 0 110 2h-1v11a2 2 0 01-2 2H5a2 2 0 01-2-2V5H2a1 1 0 110-2h3V2zm2 3v10a1 1 0 102 0V5a1 1 0 10-2 0zm4 0v10a1 1 0 102 0V5a1 1 0 10-2 0z" />
-          </svg>
-        </button>
-      </li>
-    <% }) %>
-  </ul>
-<% } %>
+<!-- Due Today Section -->
+<div class="flex mb-4 mt-8">
+  <h5 class="text-xl">Due Today</h5>
+  <div class="bg-gray-200 px-2.5 py-0.5 rounded text-base ml-2" id="count-due-today"><%= dueTodayCount %></div>
+</div>
+<ul class="list-none">
+  <% dueTodayTodos.forEach(function(todo) { %>
+    <li>
+      <div class="flex items-center w-fit my-2 px-2 py-1 hover:bg-green-50 rounded group">
+        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 border-gray-300 bg-gray-100" <%= todo.completed ? 'checked' : '' %> >
+        <label for="todo-<%= todo.id %>" class="ml-2"><%= todo.title %> - <%= todo.dueDate %></label>
+      </div>
+    </li>
+  <% }); %>
+</ul>
 
-<!-- Due Later Tasks -->
-<% if (dueLater.length > 0) { %>
-  <h5 class="text-lg font-semibold text-green-600 mt-6">Due Later</h5>
-  <div id="due-later-count" class="text-sm text-gray-500">Count: <%= dueLater.length %></div>
-  <ul class="divide-y divide-gray-200">
-    <% dueLater.forEach(todo => { %>
-      <li class="flex items-center justify-between py-2">
-        <div>
-          <input type="checkbox" <% if (todo.completed) { %>checked<% } %> onclick="completeTodo(<%= todo.id %>)" class="mr-2">
-          <span class="<%= todo.completed ? 'line-through text-gray-400' : '' %>"><%= todo.title %></span>
-          <small class="text-green-500">(Due: <%= todo.dueDate %>)</small>
-        </div>
-        <button onclick="deleteTodo(<%= todo.id %>)" class="hover:text-red-600">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-current" viewBox="0 0 20 20">
-            <path d="M6 2a1 1 0 011-1h6a1 1 0 011 1v1h3a1 1 0 110 2h-1v11a2 2 0 01-2 2H5a2 2 0 01-2-2V5H2a1 1 0 110-2h3V2zm2 3v10a1 1 0 102 0V5a1 1 0 10-2 0zm4 0v10a1 1 0 102 0V5a1 1 0 10-2 0z" />
-          </svg>
-        </button>
-      </li>
-    <% }) %>
-  </ul>
-<% } %>
-
-<!-- No Tasks Message -->
-<% if (overdue.length === 0 && dueToday.length === 0 && dueLater.length === 0) { %>
-  <p class="text-gray-500 mt-6">No todos yet. Add one above!</p>
-<% } %>
+<!-- Due Later Section -->
+<div class="flex mb-4 mt-8">
+  <h5 class="text-xl">Due Later</h5>
+  <div class="bg-gray-200 px-2.5 py-0.5 rounded text-base ml-2" id="count-due-later"><%= dueLaterCount %></div>
+</div>
+<ul class="list-none">
+  <% dueLaterTodos.forEach(function(todo) { %>
+    <li>
+      <div class="flex items-center w-fit my-2 px-2 py-1 hover:bg-yellow-50 rounded group">
+        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 border-gray-300 bg-gray-100" <%= todo.completed ? 'checked' : '' %> >
+        <label for="todo-<%= todo.id %>" class="ml-2"><%= todo.title %> - <%= todo.dueDate %></label>
+      </div>
+    </li>
+  <% }); %>
+</ul>

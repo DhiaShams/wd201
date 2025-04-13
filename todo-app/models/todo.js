@@ -15,6 +15,14 @@
      static getTodos() {
        return this.findAll();
      }
+
+     static async remove(id){
+      return this.destroy({
+        where:{
+          id,
+        },
+      });
+     }
  
      markAsCompleted() {
        return this.update({ completed: true });

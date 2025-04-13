@@ -7,7 +7,7 @@
   <% overdueTodos.forEach(function(todo) { %>
     <li class="todo-item">
       <div class="flex items-center w-fit my-2 px-2 py-1 hover:bg-purple-50 rounded group">
-        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 border-gray-300 bg-gray-100" <%= todo.completed ? 'checked' : '' %> >
+        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 border-gray-300 bg-gray-100" <%= todo.completed ? 'checked' : '' %> onclick="updateTodo(<%= todo.id %>)">
         <label for="todo-<%= todo.id %>" class="ml-2"><%= todo.title %> - <%= todo.dueDate %></label>
         <a href="#" role="button" aria-label="Delete Todo" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
           <!-- Trash Icon SVG -->
@@ -32,7 +32,7 @@
   <% dueTodayTodos.forEach(function(todo) { %>
     <li class="todo-item">
       <div class="flex items-center w-fit my-2 px-2 py-1 hover:bg-green-50 rounded group">
-        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 border-gray-300 bg-gray-100" <%= todo.completed ? 'checked' : '' %> >
+        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 border-gray-300 bg-gray-100" <%= todo.completed ? 'checked' : '' %> onclick="updateTodo(<%= todo.id %>)">
         <label for="todo-<%= todo.id %>" class="ml-2"><%= todo.title %> - <%= todo.dueDate %></label>
         <a href="#" role="button" aria-label="Delete Todo" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
           <!-- Trash Icon SVG Same as above -->
@@ -57,7 +57,7 @@
   <% dueLaterTodos.forEach(function(todo) { %>
     <li class="todo-item">
       <div class="flex items-center w-fit my-2 px-2 py-1 hover:bg-yellow-50 rounded group">
-        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 border-gray-300 bg-gray-100" <%= todo.completed ? 'checked' : '' %> >
+        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 border-gray-300 bg-gray-100" <%= todo.completed ? 'checked' : '' %> onclick="updateTodo(<%= todo.id %>)">
         <label for="todo-<%= todo.id %>" class="ml-2"><%= todo.title %> - <%= todo.dueDate %></label>
         <a href="#" role="button" aria-label="Delete Todo" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
           <!-- Trash Icon SVG Same as above -->

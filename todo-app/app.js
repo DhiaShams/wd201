@@ -91,13 +91,14 @@ app.post("/todos", async function (request, response) {
 });
 
 // Mark todo as completed
-app.put("/todos/:id/markAsCompleted", async function (request, response) {
+app.put("/todos/:id/setCompletionStatus", async function (request, response) {
   try {
     const todo = await Todo.findByPk(request.params.id);
     if (!todo) {
       return response.status(404).send("Todo not found");
     }
-    const updatedTodo = await todo.markAsCompleted();
+    const status=request.body.completed===true;
+    const updatedTodo = await todo.setCompletionStatus(status);
     return response.json(updatedTodo);
   } catch (error) {
     console.log(error);

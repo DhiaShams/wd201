@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    async markAsCompleted() {
-      return await this.update({ completed: true });
+    async setCompletionStatus(status) {
+      return await this.update({ completed: status });
     }
 
     static async overdue() {

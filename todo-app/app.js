@@ -1,5 +1,5 @@
 const express = require("express");
-var csrf = require("csurf");
+var csrf = require("tiny-csrf");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
@@ -9,7 +9,7 @@ const path = require("path");
 app.use(bodyParser.urlencoded({ extended: false })); // to support form submissions
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(cookieParser("shh! some secret string"));
-app.use(csrf({ cookie: true }));
+app.use(csrf("this_should_be_32_character_long",["POST","PUT","DELETE"]));
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));

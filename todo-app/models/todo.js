@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static async remove(id) {
       return await this.destroy({
-        where: { id }
+        where: { id },
       });
     }
 
@@ -31,9 +31,9 @@ module.exports = (sequelize, DataTypes) => {
       return await this.findAll({
         where: {
           dueDate: { [sequelize.Sequelize.Op.lt]: new Date() },
-          completed: false
+          completed: false,
         },
-        order: [["dueDate", "ASC"]]
+        order: [["dueDate", "ASC"]],
       });
     }
 
@@ -42,9 +42,9 @@ module.exports = (sequelize, DataTypes) => {
       return await this.findAll({
         where: {
           dueDate: today,
-          completed: false
+          completed: false,
         },
-        order: [["id", "ASC"]]
+        order: [["id", "ASC"]],
       });
     }
 
@@ -52,9 +52,9 @@ module.exports = (sequelize, DataTypes) => {
       return await this.findAll({
         where: {
           dueDate: { [sequelize.Sequelize.Op.gt]: new Date() },
-          completed: false
+          completed: false,
         },
-        order: [["dueDate", "ASC"]]
+        order: [["dueDate", "ASC"]],
       });
     }
   }
@@ -65,21 +65,21 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notEmpty: true
-        }
+          notEmpty: true,
+        },
       },
       dueDate: {
         type: DataTypes.DATEONLY,
-        allowNull: false
+        allowNull: false,
       },
       completed: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false
-      }
+        defaultValue: false,
+      },
     },
     {
       sequelize,
-      modelName: "Todo"
+      modelName: "Todo",
     }
   );
 

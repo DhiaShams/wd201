@@ -20,6 +20,7 @@
     ]
   },
   "devDependencies": {
+    "cheerio": "^1.0.0",
     "eslint": "^8.35.0",
     "eslint-plugin-import": "^2.27.5",
     "husky": "^8.0.3",
@@ -31,6 +32,8 @@
     "supertest": "^6.3.3"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "csurf": "^1.10.0",
     "ejs": "^3.1.9",
     "express": "^4.21.2",
     "pg": "^8.10.0",

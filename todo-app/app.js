@@ -1,15 +1,15 @@
 const express = require("express");
-var csrf=require("csurf");
+var csrf = require("csurf");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
-var cookieParser=require("cookie-parser");
+var cookieParser = require("cookie-parser");
 const path = require("path");
 
-app.use(bodyParser.urlencoded({ extended: false }));  // to support form submissions
-app.use(bodyParser.json());  // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({ extended: false })); // to support form submissions
+app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(cookieParser("shh! some secret string"));
-app.use(csrf({cookie:true}));
+app.use(csrf({ cookie: true }));
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
@@ -21,7 +21,7 @@ function categorizeTodos(todos) {
   const dueToday = [];
   const dueLater = [];
 
-  todos.forEach(todo => {
+  todos.forEach((todo) => {
     if (todo.dueDate < today) {
       overdue.push(todo);
     } else if (todo.dueDate === today) {
@@ -40,20 +40,19 @@ app.get("/", async (request, response) => {
   const { overdue, dueToday, dueLater } = categorizeTodos(todos);
 
   if (request.accepts("html")) {
-    response.render("index", { 
-      overdueTodos: overdue, 
-      dueTodayTodos: dueToday, 
+    response.render("index", {
+      overdueTodos: overdue,
+      dueTodayTodos: dueToday,
       dueLaterTodos: dueLater,
       overdueCount: overdue.length,
       dueTodayCount: dueToday.length,
       dueLaterCount: dueLater.length,
-      csrfToken: request.csrfToken()
+      csrfToken: request.csrfToken(),
     });
   } else {
-    response.json(todos);
+    response.json({ overdue, dueToday, dueLater }); // <-- fixed here
   }
 });
-
 
 // Get all todos as JSON
 app.get("/todos", async function (_, response) {
@@ -83,8 +82,8 @@ app.get("/todos/:id", async function (request, response) {
 // Add a new todo
 app.post("/todos", async function (request, response) {
   try {
-    const todo = await Todo.addTodo(request.body);
-    return response.redirect("/");  // redirect back to the homepage after adding
+    await Todo.addTodo(request.body);
+    return response.redirect("/"); // redirect back to the homepage after adding
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);

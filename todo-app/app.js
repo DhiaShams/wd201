@@ -9,7 +9,7 @@ const path = require("path");
 app.use(bodyParser.urlencoded({ extended: false })); // to support form submissions
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(cookieParser("shh! some secret string"));
-app.use(csrf("this_should_be_32_character_long",["POST","PUT","DELETE"]));
+app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
@@ -97,7 +97,7 @@ app.put("/todos/:id/setCompletionStatus", async function (request, response) {
     if (!todo) {
       return response.status(404).send("Todo not found");
     }
-    const status=request.body.completed===true;
+    const status = request.body.completed === true;
     const updatedTodo = await todo.setCompletionStatus(status);
     return response.json(updatedTodo);
   } catch (error) {

@@ -52,7 +52,6 @@
           })
           .catch((err) => console.error("Error:", err));
       }
-
   // Function to toggle a todo's completion status
   function toggleTodo(id, currentStatus) {
     fetch(`/todos/${id}`, {
@@ -66,24 +65,34 @@
       }),
     })
       .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error("Failed to update todo");
-        }
+        if (!res.ok) throw new Error("Failed to update todo");
+        return res.json(); // Parse the server's response
       })
       .then((updatedTodo) => {
         console.log("Todo updated:", updatedTodo);
-        // Dynamically update the checkbox and move the todo to the correct section
-        const checkbox = document.getElementById(`todo-${id}`);
-        checkbox.checked = updatedTodo.completed;
 
-        // Optionally reload the page or dynamically update the DOM
-        location.reload(); // Reload the page to reflect changes
+        // Update checkbox state
+        const checkbox = document.getElementById(`todo-${id}`);
+        if (checkbox) {
+          checkbox.checked = updatedTodo.completed; // Reflect the updated status
+        }
+
+        // Move the <li> to the correct list
+        const todoItem = document.getElementById(`todo-item-${id}`);
+        const pendingList = document.getElementById("pending-list");
+        const completedList = document.getElementById("completed-list");
+
+        if (todoItem) {
+          if (updatedTodo.completed) {
+            completedList.appendChild(todoItem); // Move to Completed list
+          } else {
+            pendingList.appendChild(todoItem); // Move to Pending list
+          }
+        }
       })
       .catch((err) => console.error("Error:", err));
   }
-    </script>
+</script>
   </head>
   <body class="bg-gray-100">
     <div class="grid grid-cols-6">

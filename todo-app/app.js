@@ -112,14 +112,17 @@ app.post("/todos", async function (request, response) {
 app.put("/todos/:id", async (req, res) => {
   try {
     const todo = await Todo.findByPk(req.params.id);
-    if (!todo) return res.status(404).json({ error: "Todo not found" });
-    
-    todo.completed = req.body.completed === "true" || req.body.completed === true;
+    if (!todo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    todo.completed = req.body.completed === true || req.body.completed === "true";
     await todo.save();
 
-    return res.status(200).json(todo);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(200).json(todo); // Return the updated todo object
+  } catch (error) {
+    console.error("Error updating todo:", error);
+    return res.status(500).json({ error: "Failed to update todo" });
   }
 });
 

@@ -9,7 +9,7 @@ const path = require("path");
 app.use(bodyParser.urlencoded({ extended: false })); // to support form submissions
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(cookieParser("shh! some secret string"));
-app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+app.use(csrf("this_should_be_32_character_long",["POST","PUT","DELETE"]));
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
@@ -38,19 +38,27 @@ function categorizeTodos(todos) {
 app.get("/", async (request, response) => {
   const todos = await Todo.getTodos();
   const { overdue, dueToday, dueLater } = categorizeTodos(todos);
+  const completedTodos = todos.filter((todo) => todo.completed);
 
   if (request.accepts("html")) {
     response.render("index", {
       overdueTodos: overdue,
       dueTodayTodos: dueToday,
       dueLaterTodos: dueLater,
+      completedTodos: completedTodos,  // <-- Add this
       overdueCount: overdue.length,
       dueTodayCount: dueToday.length,
       dueLaterCount: dueLater.length,
+      completedCount: completedTodos.length,  // <-- And this
       csrfToken: request.csrfToken(),
     });
   } else {
-    response.json({ overdue, dueToday, dueLater }); // <-- fixed here
+    response.json({ 
+      overdue, 
+      dueToday, 
+      dueLater, 
+      completed: completedTodos  // <-- Add this too for JSON response consistency
+    });
   }
 });
 
@@ -91,7 +99,7 @@ app.post("/todos", async function (request, response) {
 });
 
 // Mark todo as completed
-app.put("/todos/:id/setCompletionStatus", async function (request, response) {
+app.put("/todos/:id", async function (request, response) {
   try {
     const todo = await Todo.findByPk(request.params.id);
     if (!todo) {
@@ -101,10 +109,11 @@ app.put("/todos/:id/setCompletionStatus", async function (request, response) {
     const updatedTodo = await todo.setCompletionStatus(status);
     return response.json(updatedTodo);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return response.status(422).json(error);
   }
 });
+
 
 // Delete todo
 app.delete("/todos/:id", async function (request, response) {

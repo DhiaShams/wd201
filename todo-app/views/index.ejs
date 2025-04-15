@@ -40,6 +40,26 @@
         })
         .catch((err) => console.error(err));
       }
+      function toggleTodo(id, currentStatus) {
+  fetch(`/todos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      completed: !currentStatus,
+       "_csrf" : token
+    }),
+  })
+  .then(res => res.json())
+  .then(updatedTodo => {
+    console.log("Todo updated:", updatedTodo);
+    // Optionally: reload the page or update DOM here.
+    location.reload();  // or update your list dynamically.
+  })
+  .catch(err => console.error(err));
+}
+
     </script>
   </head>
   <body class="bg-gray-100">
@@ -55,7 +75,6 @@
 
       <!-- Todo Lists Section -->
       <%- include('todos.ejs') %>
-
       </div>
     </div>
   </body>

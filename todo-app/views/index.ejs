@@ -8,58 +8,81 @@
     <link rel="stylesheet" href="./css/styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script>
-      var token=document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-      function updateTodo(id){
-        fetch(`/todos/${id}/setCompletionStatus`,{
-          method: "put",
-          headers: {"Content-Type": "application/json"},
-          body:JSON.stringify({
-            "completed": true,
-            "_csrf" : token
-      })
+      var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    
+      // Function to update a todo's completion status
+      function updateTodo(id, currentStatus) {
+        fetch(`/todos/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            completed: !currentStatus, // Toggle the current status
+            _csrf: token,
+          }),
         })
-        .then((res) => {
-          if(res.ok) {
-            window.location.reload();
-          }
-        })
-        .catch((err) => console.error(err));
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload(); // Reload the page to reflect changes
+            } else {
+              console.error("Failed to update todo");
+            }
+          })
+          .catch((err) => console.error("Error:", err));
       }
-      function deleteTodo(id){
-        fetch(`/todos/${id}`,{
-          method: "delete",
-          headers: {"Content-Type": "application/json"},
-          body:JSON.stringify({
-        "_csrf" : token
-      })
+    
+      // Function to delete a todo
+      function deleteTodo(id) {
+        fetch(`/todos/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
         })
-        .then((res) => {
-          if(res.ok) {
-            window.location.reload();
-          }
-        })
-        .catch((err) => console.error(err));
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload(); // Reload the page to reflect changes
+            } else {
+              console.error("Failed to delete todo");
+            }
+          })
+          .catch((err) => console.error("Error:", err));
       }
-      function toggleTodo(id, currentStatus) {
-  fetch(`/todos/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      completed: !currentStatus,
-       "_csrf" : token
-    }),
-  })
-  .then(res => res.json())
-  .then(updatedTodo => {
-    console.log("Todo updated:", updatedTodo);
-    // Optionally: reload the page or update DOM here.
-    location.reload();  // or update your list dynamically.
-  })
-  .catch(err => console.error(err));
-}
 
+  // Function to toggle a todo's completion status
+  function toggleTodo(id, currentStatus) {
+    fetch(`/todos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        completed: !currentStatus, // Toggle the current status
+        _csrf: token,
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error("Failed to update todo");
+        }
+      })
+      .then((updatedTodo) => {
+        console.log("Todo updated:", updatedTodo);
+        // Dynamically update the checkbox and move the todo to the correct section
+        const checkbox = document.getElementById(`todo-${id}`);
+        checkbox.checked = updatedTodo.completed;
+
+        // Optionally reload the page or dynamically update the DOM
+        location.reload(); // Reload the page to reflect changes
+      })
+      .catch((err) => console.error("Error:", err));
+  }
     </script>
   </head>
   <body class="bg-gray-100">

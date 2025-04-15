@@ -99,29 +99,39 @@ app.post("/todos", async function (request, response) {
 });
 
 // Mark todo as completed
+// app.put("/todos/:id", async (req, res) => {
+//   const todo = await Todo.findByPk(req.params.id);
+//   if (todo) {
+//     todo.completed = req.body.completed;
+//     await todo.save();
+//     res.json(todo);
+//   } else {
+//     res.status(404).send();
+//   }
+// });
 app.put("/todos/:id", async (req, res) => {
-  const todo = await Todo.findByPk(req.params.id);
-  if (todo) {
-    todo.completed = req.body.completed;
+  try {
+    const todo = await Todo.findByPk(req.params.id);
+    if (!todo) return res.status(404).json({ error: "Todo not found" });
+    
+    todo.completed = req.body.completed === "true" || req.body.completed === true;
     await todo.save();
-    res.json(todo);
-  } else {
-    res.status(404).send();
+
+    return res.status(200).json(todo);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
 });
-
 
 // Delete todo
-app.delete("/todos/:id", async function (request, response) {
+app.delete("/todos/:id", async (req, res) => {
   try {
-    const deletedResultsCount = await Todo.destroy({
-      where: { id: request.params.id },
-    });
-    response.send(deletedResultsCount === 1);
+    await Todo.destroy({ where: { id: req.params.id } });
+    return res.status(200).json({ success: true });
   } catch (error) {
-    console.log(error);
-    response.status(500).json(error);
+    return res.status(500).json({ error: error.message });
   }
 });
+
 
 module.exports = app;

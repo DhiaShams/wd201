@@ -216,17 +216,6 @@ describe("Todo Application", function () {
     expect(todo.completed).toBe(true);
   });
 
-  it("Deletes a todo with CSRF token", async () => {
-    const res = await agent.get("/");
-    const csrfToken = extractCsrfToken(res);
-
-    const todo = await makeTodo({ title: "Buy Clothes" });
-    const response = await agent.delete(`/todos/${todo.id}`).send({ _csrf: csrfToken });
-
-    expect(response.status).toBe(200);
-    await expect(todo.reload()).rejects.toThrow();
-  });
-
   it("Fails to delete a todo without CSRF token", async () => {
     const todo = await makeTodo({ title: "Buy Clothes" });
     const response = await agent.delete(`/todos/${todo.id}`).send();
@@ -273,5 +262,66 @@ describe("Todo Application", function () {
     await todo.reload();
     expect(todo.completed).toBe(false);
   });  
+
+  it("Should toggle a completed item to incomplete when clicked on it", async () => {
+    // Get CSRF token
+    let res = await agent.get("/");
+    let csrfToken = extractCsrfToken(res);
+  
+    // Create a completed todo
+    const todo = await makeTodo({ title: "Sample Todo", completed: true });
+  
+    // Toggle to incomplete
+    const toggleResponse = await agent.put(`/todos/${todo.id}`).send({
+      completed: false,
+      _csrf: csrfToken,
+    });
+  
+    expect(toggleResponse.status).toBe(200);
+    const updatedTodo = toggleResponse.body;
+    expect(updatedTodo.completed).toBe(false);
+  
+    // Reload the todo and verify
+    await todo.reload();
+    expect(todo.completed).toBe(false);
+  
+    // Refresh CSRF token before toggling back
+    res = await agent.get("/");
+    csrfToken = extractCsrfToken(res);
+  
+    // Toggle back to completed
+    const toggleBackResponse = await agent.put(`/todos/${todo.id}`).send({
+      completed: true,
+      _csrf: csrfToken,
+    });
+  
+    expect(toggleBackResponse.status).toBe(200);
+    const updatedBackTodo = toggleBackResponse.body;
+    expect(updatedBackTodo.completed).toBe(true);
+  
+    // Reload the todo and verify
+    await todo.reload();
+    expect(todo.completed).toBe(true);
+  });
+  
+  it("Should delete an item", async () => {
+    // Get CSRF token
+    const res = await agent.get("/");
+    const csrfToken = extractCsrfToken(res);
+  
+    // Create a todo
+    const todo = await makeTodo({ title: "Sample Todo to Delete" });
+  
+    // Delete the todo
+    const deleteResponse = await agent.delete(`/todos/${todo.id}`).send({
+      _csrf: csrfToken,
+    });
+  
+    expect(deleteResponse.status).toBe(200);
+  
+    // Verify the todo is deleted
+    const deletedTodo = await Todo.findByPk(todo.id);
+    expect(deletedTodo).toBeNull();
+  });
   
 });

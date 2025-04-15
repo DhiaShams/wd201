@@ -44,6 +44,87 @@ describe("Todo Application", function () {
   afterAll(async () => {
     await db.sequelize.close();
   });
+  
+    it("Should create a sample due today item", async () => {
+      const res = await agent.get("/");
+      const csrfToken = extractCsrfToken(res);
+  
+      const response = await agent.post("/todos").send({
+        title: "Sample Due Today",
+        dueDate: today(), // Today's date
+        completed: false,
+        _csrf: csrfToken,
+      });
+  
+      expect(response.status).toBe(302);
+  
+      const created = await Todo.findOne({ where: { title: "Sample Due Today" } });
+      expect(created).toBeDefined();
+      expect(created.dueDate).toBe(today());
+      expect(created.completed).toBe(false);
+    });
+  
+    it("Should create a sample due later item", async () => {
+      const res = await agent.get("/");
+      const csrfToken = extractCsrfToken(res);
+  
+      const response = await agent.post("/todos").send({
+        title: "Sample Due Later",
+        dueDate: randomFutureDate(), // Tomorrow's date
+        completed: false,
+        _csrf: csrfToken,
+      });
+  
+      expect(response.status).toBe(302);
+  
+      const created = await Todo.findOne({ where: { title: "Sample Due Later" } });
+      expect(created).toBeDefined();
+      expect(created.dueDate).toBe(randomFutureDate());
+      expect(created.completed).toBe(false);
+    });
+  
+    it("Should create a sample overdue item", async () => {
+      const res = await agent.get("/");
+      const csrfToken = extractCsrfToken(res);
+  
+      const response = await agent.post("/todos").send({
+        title: "Sample Overdue",
+        dueDate: randomPastDate(), // Yesterday's date
+        completed: false,
+        _csrf: csrfToken,
+      });
+  
+      expect(response.status).toBe(302);
+  
+      const created = await Todo.findOne({ where: { title: "Sample Overdue" } });
+      expect(created).toBeDefined();
+      expect(created.dueDate).toBe(randomPastDate());
+      expect(created.completed).toBe(false);
+    });
+  
+    it("Should mark a sample overdue item as completed", async () => {
+      let res = await agent.get("/");
+      let csrfToken = extractCsrfToken(res);
+  
+      const todo = await makeTodo({
+        title: "Sample Overdue",
+        dueDate: randomPastDate(), // Yesterday's date
+        completed: false,
+      });
+  
+      res = await agent.get("/");
+      csrfToken = extractCsrfToken(res);
+  
+      const response = await agent.put(`/todos/${todo.id}`).send({
+        completed: true,
+        _csrf: csrfToken,
+      });
+  
+      expect(response.status).toBe(200);
+  
+      await todo.reload();
+      expect(todo.completed).toBe(true);
+    });
 
   it("Returns all todos in JSON format", async () => {
     const todoList = await Promise.all([

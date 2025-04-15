@@ -99,18 +99,14 @@ app.post("/todos", async function (request, response) {
 });
 
 // Mark todo as completed
-app.put("/todos/:id", async function (request, response) {
-  try {
-    const todo = await Todo.findByPk(request.params.id);
-    if (!todo) {
-      return response.status(404).send("Todo not found");
-    }
-    const status = request.body.completed === true;
-    const updatedTodo = await todo.setCompletionStatus(status);
-    return response.json(updatedTodo);
-  } catch (error) {
-    console.error(error);
-    return response.status(422).json(error);
+app.put("/todos/:id", async (req, res) => {
+  const todo = await Todo.findByPk(req.params.id);
+  if (todo) {
+    todo.completed = req.body.completed;
+    await todo.save();
+    res.json(todo);
+  } else {
+    res.status(404).send();
   }
 });
 

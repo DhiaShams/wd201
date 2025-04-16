@@ -26,6 +26,7 @@
           dueDate: {
             [Op.lt]: new Date().toLocaleDateString("en-CA"),
           },
+          completed:false,
         },
       });
       return odt;
@@ -38,6 +39,7 @@
           dueDate: {
             [Op.eq]: new Date().toLocaleDateString("en-CA"),
           },
+          completed:false,
         },
       });
 
@@ -51,6 +53,7 @@
           dueDate: {
             [Op.gt]: new Date().toLocaleDateString("en-CA"),
           },
+          completed:false,
         },
       });
       return dl;

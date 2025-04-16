@@ -1,113 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="<%= csrfToken %>" />
-    <title>Todo App</title>
-    <link rel="stylesheet" href="./css/styles.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script>
-      var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    
-      // Function to update a todo's completion status
-      function updateTodo(id, currentStatus) {
-        fetch(`/todos/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            completed: !currentStatus, // Toggle the current status
-            _csrf: token,
-          }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              window.location.reload(); // Reload the page to reflect changes
-            } else {
-              console.error("Failed to update todo");
-            }
-          })
-          .catch((err) => console.error("Error:", err));
-      }
-    
-      // Function to delete a todo
-      function deleteTodo(id) {
-        fetch(`/todos/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            _csrf: token,
-          }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              window.location.reload(); // Reload the page to reflect changes
-            } else {
-              console.error("Failed to delete todo");
-            }
-          })
-          .catch((err) => console.error("Error:", err));
-      }
-  // Function to toggle a todo's completion status
-  function toggleTodo(id, currentStatus) {
-    fetch(`/todos/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        completed: !currentStatus, // Toggle the current status
-        _csrf: token,
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to update todo");
-        return res.json(); // Parse the server's response
-      })
-      .then((updatedTodo) => {
-        console.log("Todo updated:", updatedTodo);
-
-        // Update checkbox state
-        const checkbox = document.getElementById(`todo-${id}`);
-        if (checkbox) {
-          checkbox.checked = updatedTodo.completed; // Reflect the updated status
-        }
-
-        // Move the <li> to the correct list
-        const todoItem = document.getElementById(`todo-item-${id}`);
-        const pendingList = document.getElementById("pending-list");
-        const completedList = document.getElementById("completed-list");
-
-        if (todoItem) {
-          if (updatedTodo.completed) {
-            completedList.appendChild(todoItem); // Move to Completed list
-          } else {
-            pendingList.appendChild(todoItem); // Move to Pending list
-          }
-        }
-      })
-      .catch((err) => console.error("Error:", err));
-  }
-</script>
-  </head>
-  <body class="bg-gray-100">
-    <div class="grid grid-cols-6">
-      <div class="col-start-3 col-span-2">
-        <%- include('header.ejs') %>
-      <form action="/todos" method="post" class="flex justify-center mb-8">
-        <input type="text" name="title" placeholder="Enter todo" required class="border p-2 rounded-l w-64" />
-        <input type="date" name="dueDate" required class="border p-2" />
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-        <button type="submit" class="bg-green-500 text-white p-2 rounded-r hover:bg-blue-600">Add Todo</button>
-      </form>
-
-      <!-- Todo Lists Section -->
-      <%- include('todos.ejs') %>
-      </div>
-    </div>
-  </body>
-</html>
+ <html lang="en">
+   <head>
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>Todo App</title>
+     <meta name="csrf-token" content="<%= csrfToken %>" />
+     <script src="https://cdn.tailwindcss.com"></script>
+     <link rel="stylesheet" href="/css/styles.css" />
+     <script>
+     var token=document
+                 .querySelector('meta[name="csrf-token"]')
+                 .getAttribute("content");    
+     function updateTodo(id) {
+         const Checked = document.querySelector(`#todo-checkbox-${id}`).checked;
+         fetch(`/todos/${id}`,{
+             method: "put",
+             headers: { "Content-Type": "application/json" },
+             body: JSON.stringify({
+                         completed: Checked,
+                         "_csrf":token,
+                     })
+         })
+         .then((res) => {
+             if(res.ok){
+                 window.location.reload();
+             }
+         })
+         .catch((err) => console.error(err));
+     }
+ 
+     function deleteTodo(id) {
+                 fetch(`/todos/${id}`, {
+                     method: "delete",
+                     headers: { "Content-Type": "application/json" },
+                     body: JSON.stringify({
+                         "_csrf":token
+                     })
+                 })
+                 .then((res)=> {
+                     if(res.ok) {
+                         window.location.reload();
+                     }
+                 })
+                 .catch((err) => console.error(err));
+                 }
+ </script>
+   </head>
+   <body>
+     <div class="grid grid-cols-6">
+       <div class="col-start-3 col-span-2">
+         <%- include('header') %>
+         <form action="/todos" method="post">
+             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+             <div class="flex gap-2 py-4">
+                 <div class="flex-auto">
+                     <input type="text" name="title" placeholder="What's next?" class="border border-black-300 rounded text-black-900 w-full p-2 text-sm" required />
+                 </div>
+                 <div class="flex-auto">
+                      <input type="date"name="dueDate" class="border border-black-300 rounded text-black-900 w-full p-2 text-sm leading-4" required/>
+                 </div>
+                 <div class="flex-none">
+                     <button type="submit" class="bg-green-600 text-white px-5 py-1.5 rounded font-medium mr-2 mb-2">Add</button>
+                 </div>
+             </div>
+         </form>
+         <%- include('todos') %>
+         <%- include('footer') %>
+       </div>
+     </div>
+   </body>

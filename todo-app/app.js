@@ -115,30 +115,15 @@ const express = require("express");
   }
 );
 
-app.get("/signup", async (request, response) => {
+app.get("/signup", (request, response) => {
   response.render("signup", {
-    title: "Signup",
     csrfToken: request.csrfToken(),
+    title: "Signup",
   });
 });
 
 app.post("/users", async (request, response) => {
-  if (request.body.firstName.length == 0) {
-    request.flash("error", "Please, Fill the First name!");
-    return response.redirect("/signup");
-  }
-  if (request.body.email.length == 0) {
-    request.flash("error", "Please, Fill the E-Mail!");
-    return response.redirect("/signup");
-  }
-  if (request.body.password.length == 0) {
-    request.flash("error", "Please, Fill the Password!");
-    return response.redirect("/signup");
-  }
-  //Hash password using bcrypt
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-  console.log(hashedPwd);
-  //Creating a user
   try {
     const user = await User.create({
       firstName: request.body.firstName,
@@ -146,20 +131,19 @@ app.post("/users", async (request, response) => {
       email: request.body.email,
       password: hashedPwd,
     });
+
+    // Use request.login to log in the user and redirect
     request.login(user, (err) => {
       if (err) {
         console.log(err);
-        res.redirect("/todo");
-      } else {
-        request.flash("success", "Sign up successful");
-        response.redirect("/todo");
+        return response.status(500).send("Error logging in");
       }
-      response.redirect("/todo");
+      // Redirect only once inside the callback
+      return response.redirect("/todos");
     });
   } catch (error) {
     console.log(error);
-    request.flash("error", "User already Exists");
-    return response.redirect("/signup");
+    response.status(500).send("Error creating user");
   }
 });
 app.get("/login", (request, response) => {
@@ -229,7 +213,7 @@ app.post(
       await Todo.addTodo({
         title: request.body.title,
         dueDate: request.body.dueDate,
-        completed: false,
+        completed: request.body.completed,
         userId: request.user.id,
       });
       return response.redirect("/todo");

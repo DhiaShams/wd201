@@ -9,10 +9,13 @@
       */
      static associate(models) {
        // define association here
+       Todo.belongsTo(models.User,{
+        foreignKey: 'userId'
+       })
      }
  
-     static addTodo({ title, dueDate }) {
-       return this.create({ title: title, dueDate: dueDate, completed: false });
+     static addTodo({ title, dueDate,userId }) {
+       return this.create({ title: title, dueDate: dueDate, completed: false,userId });
      }
  
      static getTodos() {

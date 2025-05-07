@@ -84,6 +84,10 @@ const express = require("express");
  const { Todo, User } = require("./models");
  
  app.get("/", async (request, response) => {
+  if (request.isAuthenticated()) {
+    // If the user is logged in, redirect to /todo
+    return response.redirect("/todo");
+  }
    response.render("index", {
      title: "Todo Application",
      csrfToken: request.csrfToken(),

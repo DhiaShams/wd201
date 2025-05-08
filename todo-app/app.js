@@ -189,18 +189,21 @@ app.post("/users", async (request, response) => {
     });
   });
   
-  app.get("/todos", async (_request, response) => {
-    console.log("Processing list of all Todos ...");
-    // FILL IN YOUR CODE HERE
-  
-    try {
-      const todos = await Todo.findAll();
-      return response.send(todos);
-    } catch (error) {
-      console.log(error);
-      return response.status(422).json(error);
-    }
-  });
+// Replace both old /todos GET routes with this one
+app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+  try {
+    const todos = await Todo.findAll({
+      where: {
+        userId: request.user.id,
+      },
+    });
+    response.json(todos);
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    response.status(500).json({ error: "Internal server error" });
+  }
+});
+
   
   app.get("/todos/:id", async (request, response) => {
     try {

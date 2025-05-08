@@ -60,7 +60,7 @@ passport.use(
           }
         })
         .catch((error) => {
-          return done(err);
+          return done(error);
         });
     }
   )
@@ -149,7 +149,7 @@ app.post("/users", async (request, response) => {
     request.login(user, (err) => {
       if (err) {
         console.log(err);
-        res.redirect("/todo");
+        response.redirect("/todo");
       } else {
         request.flash("success", "Sign up successful");
         response.redirect("/todo");

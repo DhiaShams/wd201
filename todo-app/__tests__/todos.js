@@ -48,6 +48,32 @@ const request = require("supertest");
      });
      expect(res.statusCode).toBe(302);
    });
+
+   test("Signup should visit signup path and create an account", async () => {
+  // Visit the signup page
+  let res = await agent.get("/signup");
+  expect(res.statusCode).toBe(200); // Verify that the signup page is accessible
+
+  // Extract CSRF token from the signup page
+  const csrfToken = extractCsrfToken(res);
+
+  // Submit the signup form with valid data
+  res = await agent.post("/users").send({
+    firstName: "Test",
+    lastName: "User",
+    email: "testuser@example.com",
+    password: "password123",
+    _csrf: csrfToken,
+  });
+
+  // Verify that the user is redirected to the /todo page after signup
+  expect(res.statusCode).toBe(302);
+  expect(res.headers.location).toBe("/todo");
+
+  // Verify that the user is logged in by accessing the /todo page
+  res = await agent.get("/todo");
+  expect(res.statusCode).toBe(200);
+});
  
    test("Sign out", async () => {
      let res = await agent.get("/todo");

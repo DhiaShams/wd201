@@ -152,7 +152,7 @@ app.post("/users", async (request, response) => {
         response.redirect("/todo");
       } else {
         request.flash("success", "Sign up successful");
-        response.redirect("/todos");
+        response.redirect("/todo");
       }
     });
   } catch (error) {

@@ -152,10 +152,10 @@ app.post("/users", async (request, response) => {
     request.login(user, (err) => {
       if (err) {
         console.log(err);
-        response.redirect("/todo");
+        response.redirect("/todos");
       } else {
         request.flash("success", "Sign up successful");
-        response.redirect("/todo");
+        response.redirect("/todos");
       }
     });
   } catch (error) {

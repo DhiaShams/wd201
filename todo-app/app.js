@@ -94,7 +94,7 @@ app.get("/", async (request, response) => {
 });
 
 app.get(
-  "/todo",
+  "/todos",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const loggedInUser = request.user.id;
@@ -177,7 +177,7 @@ app.post(
   }),
   function (request, response) {
     console.log(request.user);
-    response.redirect("/todo");
+    response.redirect("/todos");
   }
 );
 
@@ -188,19 +188,6 @@ app.get("/signout", (request, response, next) => {
     }
     response.redirect("/");
   });
-});
-
-app.get("/todos", async (_request, response) => {
-  console.log("Processing list of all Todos ...");
-  // FILL IN YOUR CODE HERE
-
-  try {
-    const todos = await Todo.findAll();
-    return response.send(todos);
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
 });
 
 app.get("/todos/:id", async (request, response) => {
@@ -273,10 +260,5 @@ app.delete(
     }
   }
 );
-
-app.get("/todos", async (request, response) => {
-  const todoItem = await Todo.gettodo();
-  response.json(todoItem);
-});
 
 module.exports = app;

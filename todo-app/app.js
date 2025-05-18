@@ -206,14 +206,14 @@ app.post(
   async (request, response) => {
     if (request.body.title.length == 0) {
       request.flash("error", "Please, Fill the title!");
-      return response.redirect("/todo");
+      return response.redirect("/todos");
     }
     if (request.body.dueDate.length == 0) {
       request.flash("error", "Please, Fill the date!");
-      return response.redirect("/todo");
+      return response.redirect("/todos");
     } else if (request.body.title.length < 5) {
       request.flash("error", "Title's length should be atleast 5 characters.");
-      return response.redirect("/todo");
+      return response.redirect("/todos");
     }
     try {
       await Todo.addTodo({
@@ -222,7 +222,7 @@ app.post(
         completed: false,
         userId: request.user.id,
       });
-      return response.redirect("/todo");
+      return response.redirect("/todos");
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
